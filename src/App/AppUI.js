@@ -8,6 +8,8 @@ import { TodoList } from "../components/TodoList";
 import { TodoSearch } from "../components/TodoSearch";
 
 function AppUI({
+  pError,
+  pLoading,
   vTotalTodosLength,
   vCompletedTodosLength,
   inn_search,
@@ -24,6 +26,9 @@ function AppUI({
       />
       <TodoSearch stateOne={inn_search} setStateOne={setInn_search} />
       <TodoList>
+        {pError && <p>Error!</p>}
+        {pLoading && <p>Loading...</p>}
+        {!pLoading && !aSearchedTodos.length && <p>Create Your First TODO!</p>}
         {aSearchedTodos.map((pII, i) => (
           <TodoItem
             key={i}

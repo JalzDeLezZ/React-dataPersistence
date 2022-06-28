@@ -1,6 +1,6 @@
 import "./App.css";
 import { AppUI } from "./AppUI";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const aDefaultTodos = [
   { text: "Cortar cebolla", completed: true },
@@ -9,37 +9,51 @@ const aDefaultTodos = [
   { text: "Curso Platzi con React", completed: false },
 ];
 
-function useLocalStorage(pKey, pInitialValue){
-  let lstor_parsedItems;
+function useLocalStorage(pKey, pInitialValue) {
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [aItem, setAItem] = useState(pInitialValue);
 
-
-  const aLStorage_Item = localStorage.getItem(pKey);
-
-
-  if (!aLStorage_Item) {
-    localStorage.setItem(pKey, JSON.stringify(pInitialValue));
-    lstor_parsedItems = pInitialValue;
-  } else {
-    lstor_parsedItems = JSON.parse(aLStorage_Item);
-  }
+  useEffect(() => {
+    setTimeout(() => {
+      try {
+        const aLStorage_Item = localStorage.getItem(pKey);
   
-  const [aItem, setAItem] = useState(lstor_parsedItems);
-
+        let lstor_parsedItems;
   
+        if (!aLStorage_Item) {
+          localStorage.setItem(pKey, JSON.stringify(pInitialValue));
+          lstor_parsedItems = pInitialValue;
+        } else {
+          lstor_parsedItems = JSON.parse(aLStorage_Item);
+        }
+  
+        setAItem(lstor_parsedItems);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+      }
+    }, 1000);
+  });
+
+
   const mReloadItem = (pA_newItem) => {
-    const aStringifiedItem = JSON.stringify(pA_newItem);
-    localStorage.setItem(pKey, aStringifiedItem);
-    setAItem(pA_newItem);
+    try {
+      const aStringifiedItem = JSON.stringify(pA_newItem);
+      localStorage.setItem(pKey, aStringifiedItem);
+      setAItem(pA_newItem);
+    } catch (error) {
+      setError(error);
+    }
   };
 
-  return [aItem, mReloadItem];
+  // return [aItem, mReloadItem];
+  return {aItem, mReloadItem, loading, error};
 }
 
 function App() {
-  
-  const [aCustom_todos, setCustom_Atodos] = useLocalStorage('TODOS_V1',[]);
+  const {aItem:aCustom_todos, mReloadItem:setCustom_Atodos, loading, error} = useLocalStorage("TODOS_V1", []);
   // const [aCustom_cats, setCustom_Acats] = useLocalStorage('cats',['cat1','cat2','cat3']);
-
 
   const [inn_search, setInn_search] = useState("");
 
@@ -76,16 +90,20 @@ function App() {
     setCustom_Atodos(aNewTodos);
   };
 
+  useEffect(() => {}, [aCustom_todos]);
+
   return (
-      <AppUI
-        vTotalTodosLength={vTotalTodosLength}
-        vCompletedTodosLength={vCompletedTodosLength}
-        inn_search={inn_search}
-        setInn_search={setInn_search}
-        aSearchedTodos={aSearchedTodos}
-        mCompleteTodo={mCompleteTodo}
-        mDeleteTodo={mDeleteTodo}
-      />
+    <AppUI
+      pError={error}
+      pLoading={loading}
+      vTotalTodosLength={vTotalTodosLength}
+      vCompletedTodosLength={vCompletedTodosLength}
+      inn_search={inn_search}
+      setInn_search={setInn_search}
+      aSearchedTodos={aSearchedTodos}
+      mCompleteTodo={mCompleteTodo}
+      mDeleteTodo={mDeleteTodo}
+    />
   );
 }
 
