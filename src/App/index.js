@@ -9,73 +9,83 @@ const aDefaultTodos = [
   { text: "Curso Platzi con React", completed: false },
 ];
 
-function App() {
-  const aLocalStorageTodos = localStorage.getItem("TODOS_V1");
+function useLocalStorage(pKey, pInitialValue){
+  let lstor_parsedItems;
 
-  let lstor_parsedTodos;
 
-  if (!aLocalStorageTodos) {
-    localStorage.setItem("TODOS_V1", JSON.stringify([]));
-    lstor_parsedTodos = [];
+  const aLStorage_Item = localStorage.getItem(pKey);
+
+
+  if (!aLStorage_Item) {
+    localStorage.setItem(pKey, JSON.stringify(pInitialValue));
+    lstor_parsedItems = pInitialValue;
   } else {
-    lstor_parsedTodos = JSON.parse(aLocalStorageTodos);
+    lstor_parsedItems = JSON.parse(aLStorage_Item);
   }
+  
+  const [aItem, setAItem] = useState(lstor_parsedItems);
 
-  // const [aTodos, setAtodos] = useState(aDefaultTodos);
-  const [aTodos, setAtodos] = useState(lstor_parsedTodos);
+  
+  const mReloadItem = (pA_newItem) => {
+    const aStringifiedItem = JSON.stringify(pA_newItem);
+    localStorage.setItem(pKey, aStringifiedItem);
+    setAItem(pA_newItem);
+  };
+
+  return [aItem, mReloadItem];
+}
+
+function App() {
+  
+  const [aCustom_todos, setCustom_Atodos] = useLocalStorage('TODOS_V1',[]);
+  // const [aCustom_cats, setCustom_Acats] = useLocalStorage('cats',['cat1','cat2','cat3']);
+
+
   const [inn_search, setInn_search] = useState("");
 
-  const vCompletedTodosLength = aTodos.filter(
+  const vCompletedTodosLength = aCustom_todos.filter(
     (todo) => !!todo.completed
   ).length;
-  const vTotalTodosLength = aTodos.length;
+  const vTotalTodosLength = aCustom_todos.length;
 
   let aSearchedTodos = [];
 
   if (inn_search.length > 0) {
-    aSearchedTodos = aTodos.filter((todo) => {
-      const vTodoText = todo.text.toLowerCase();
+    aSearchedTodos = aCustom_todos.filter((pI) => {
+      const vTodoText = pI.text.toLowerCase();
       const vSearchText = inn_search.toLowerCase();
       return vTodoText.includes(vSearchText);
     });
   } else {
-    aSearchedTodos = aTodos;
+    aSearchedTodos = aCustom_todos;
   }
 
-  const mSaveTodos = (pA_newTodos) => {
-    const aStringifiedTodos = JSON.stringify(pA_newTodos);
-    localStorage.setItem("TODOS_V1", aStringifiedTodos);
-    setAtodos(pA_newTodos);
-  };
-
   const mCompleteTodo = (pText) => {
-    const vTodoIndex = aTodos.findIndex((pI) => pI.text === pText);
-    aTodos[vTodoIndex].completed = true;
-    // aTodos[vTodoIndex].completed = {//   text: aTodos[vTodoIndex].text,//   completed: true,// }
-    const aNewTodos = [...aTodos];
+    const vTodoIndex = aCustom_todos.findIndex((pI) => pI.text === pText);
+    aCustom_todos[vTodoIndex].completed = true;
+    const aNewTodos = [...aCustom_todos];
     aNewTodos[vTodoIndex].completed = true;
-    // setAtodos(aNewTodos);
-    mSaveTodos(aNewTodos);
+    setCustom_Atodos(aNewTodos);
   };
 
   const mDeleteTodo = (pText) => {
-    const vTodoIndex = aTodos.findIndex((pI) => pI.text === pText);
-    aTodos[vTodoIndex].completed = true;
-    const aNewTodos = [...aTodos];
+    const vTodoIndex = aCustom_todos.findIndex((pI) => pI.text === pText);
+    aCustom_todos[vTodoIndex].completed = true;
+    const aNewTodos = [...aCustom_todos];
     aNewTodos.splice(vTodoIndex, 1);
-    mSaveTodos(aNewTodos);
+    setCustom_Atodos(aNewTodos);
   };
 
   return (
-    <AppUI
-      vTotalTodosLength={vTotalTodosLength}
-      vCompletedTodosLength={vCompletedTodosLength}
-      inn_search={inn_search}
-      setInn_search={setInn_search}
-      aSearchedTodos={aSearchedTodos}
-      mCompleteTodo={mCompleteTodo}
-      mDeleteTodo={mDeleteTodo}
-    />
+      <AppUI
+        vTotalTodosLength={vTotalTodosLength}
+        vCompletedTodosLength={vCompletedTodosLength}
+        inn_search={inn_search}
+        setInn_search={setInn_search}
+        aSearchedTodos={aSearchedTodos}
+        mCompleteTodo={mCompleteTodo}
+        mDeleteTodo={mDeleteTodo}
+      />
   );
 }
 
