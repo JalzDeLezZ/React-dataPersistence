@@ -2,12 +2,13 @@ import "./App.css";
 import { AppUI } from "./AppUI";
 import { useState } from "react";
 
-// const aDefaultTodos = [
-//   { text: "Cortar cebolla", completed: true },
-//   { text: "Llorar con la llorono", completed: false },
-//   { text: "Comer cebolla", completed: true },
-//   { text: "Curso Platzi con React", completed: false },
-// ];
+const aDefaultTodos = [
+  { text: "Cortar cebolla", completed: true },
+  { text: "Llorar con la llorono", completed: false },
+  { text: "Comer cebolla", completed: true },
+  { text: "Curso Platzi con React", completed: false },
+];
+
 function App() {
   const aLocalStorageTodos = localStorage.getItem("TODOS_V1");
 
@@ -41,16 +42,20 @@ function App() {
     aSearchedTodos = aTodos;
   }
 
+  const mSaveTodos = (pA_newTodos) => {
+    const aStringifiedTodos = JSON.stringify(pA_newTodos);
+    localStorage.setItem("TODOS_V1", aStringifiedTodos);
+    setAtodos(pA_newTodos);
+  };
+
   const mCompleteTodo = (pText) => {
     const vTodoIndex = aTodos.findIndex((pI) => pI.text === pText);
     aTodos[vTodoIndex].completed = true;
-    // aTodos[vTodoIndex].completed = {
-    //   text: aTodos[vTodoIndex].text,
-    //   completed: true,
-    // }
+    // aTodos[vTodoIndex].completed = {//   text: aTodos[vTodoIndex].text,//   completed: true,// }
     const aNewTodos = [...aTodos];
     aNewTodos[vTodoIndex].completed = true;
-    setAtodos(aNewTodos);
+    // setAtodos(aNewTodos);
+    mSaveTodos(aNewTodos);
   };
 
   const mDeleteTodo = (pText) => {
@@ -58,7 +63,7 @@ function App() {
     aTodos[vTodoIndex].completed = true;
     const aNewTodos = [...aTodos];
     aNewTodos.splice(vTodoIndex, 1);
-    setAtodos(aNewTodos);
+    mSaveTodos(aNewTodos);
   };
 
   return (
