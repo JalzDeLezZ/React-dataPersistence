@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-
+/* 
+  localStorage.removeItem("pKey")
+  localStorage.clear()
+*/
 function useLocalStorage(pKey, pInitialValue) {
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(true);

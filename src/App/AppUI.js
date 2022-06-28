@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { Fragment } from "react";
 import { CreateTodoButton } from "../components/CreateTodoButton";
@@ -9,30 +9,29 @@ import { TodoSearch } from "../components/TodoSearch";
 import { TodoContext } from "../Context/todo";
 
 function AppUI() {
+  const { pError, pLoading, aSearchedTodos, mCompleteTodo, mDeleteTodo } =
+    useContext(TodoContext);
+
   return (
     <Fragment>
       <TodoCounter />
       <TodoSearch />
-      <TodoContext.Consumer>
-        {({pError, pLoading, aSearchedTodos, mCompleteTodo, mDeleteTodo}) => (
-          <TodoList>
-            {pError && <p>Error!</p>}
-            {pLoading && <p>Loading...</p>}
-            {!pLoading && !aSearchedTodos.length && (
-              <p>Create Your First TODO!</p>
-            )}
-            {aSearchedTodos.map((pII, i) => (
-              <TodoItem
-                key={i}
-                text={pII.text}
-                completed={pII.completed}
-                pMonComplete={() => mCompleteTodo(pII.text)}
-                pMonDelete={() => mDeleteTodo(pII.text)}
-              />
-            ))}
-          </TodoList>
-        )}
-      </TodoContext.Consumer>
+        <TodoList>
+          {pError && <p>Error!</p>}
+          {pLoading && <p>Loading...</p>}
+          {!pLoading && !aSearchedTodos.length && (
+            <p>Create Your First TODO!</p>
+          )}
+          {aSearchedTodos.map((pII, i) => (
+            <TodoItem
+              key={i}
+              text={pII.text}
+              completed={pII.completed}
+              pMonComplete={() => mCompleteTodo(pII.text)}
+              pMonDelete={() => mDeleteTodo(pII.text)}
+            />
+          ))}
+        </TodoList>
 
       <CreateTodoButton />
     </Fragment>

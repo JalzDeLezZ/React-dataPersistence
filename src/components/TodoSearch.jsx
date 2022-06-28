@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { TodoContext } from "../Context/todo";
 import "./styles/TodoSearch.scss";
 
-function TodoSearch({stateOne, setStateOne}) {
+function TodoSearch() {
+
+  const {inn_search, setInn_search} = useContext(TodoContext);
 
   const onSearchValueChange = (e) => {
-    setStateOne(e.target.value);
-    console.log(stateOne);
+    setInn_search(e.target.value);
+    console.log(inn_search);
   };
 
   return (
@@ -13,7 +16,7 @@ function TodoSearch({stateOne, setStateOne}) {
       className="TodoSearch"
       placeholder="Cebolla"
       onChange={onSearchValueChange}
-      value={stateOne}
+      value={inn_search}
     />
   );
 }
