@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/React-dataPersistence/static/css/main.c638b688.css",
+    "main.js": "/React-dataPersistence/static/js/main.eb2059b4.js",
+    "index.html": "/React-dataPersistence/index.html",
+    "main.c638b688.css.map": "/React-dataPersistence/static/css/main.c638b688.css.map",
+    "main.eb2059b4.js.map": "/React-dataPersistence/static/js/main.eb2059b4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c638b688.css",
+    "static/js/main.eb2059b4.js"
+  ]
+}
