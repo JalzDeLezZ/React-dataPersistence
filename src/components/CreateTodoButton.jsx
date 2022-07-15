@@ -3,13 +3,13 @@ import './styles/CreateTodoButton.scss';
 
 function CreateTodoButton(props) {
 
-  const onClickButton = (msg) => {
-    alert('Create Todo Button Clicked'+msg);
+  const onClickButton = () => {
+    props.pSetOpenModal((prevState) => !prevState); 
   }
 
   return (
     <button className="CreateTodoButton"
-      onClick={() => onClickButton("asdf")}
+      onClick={onClickButton}
     >+</button>
   );
 }
